@@ -5,8 +5,8 @@
 #include <unistd.h>
 
 int main(int argc, char *argv[]) {
-  int show_pids = false;
-  int numeric_sort = 0;
+  bool show_pids = false;
+  bool numeric_sort = false;
   // for (int i = 0; i < argc; i++) {
   //   assert(argv[i]);
   //   printf("argv[%d] = %s\n", i, argv[i]);
