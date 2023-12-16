@@ -81,7 +81,7 @@ void for_dir_in_proc(const char *dirPath) {
       // if (is_)
     } else {
       // Process file
-      printf("File: %s\n", filePath);
+      // printf("File: %s\n", filePath);
     }
     free(filePath);  // Don't forget to free the memory
   }
