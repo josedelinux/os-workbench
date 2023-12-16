@@ -39,11 +39,23 @@ void for_dir_in_proc(const char *dirPath) {
   }
 
   while ((entry = readdir(dir)) != NULL) {
-    char filePath[256];
-    snprintf(filePath, sizeof(filePath), "%s/%s", dirPath, entry->d_name);
+    // Calculate the size needed for the formatted string
+    size_t size = snprintf(NULL, 0, "%s/%s", dirPath, entry->d_name);
+
+    // Allocate buffer dynamically
+    char *filePath = malloc(size + 1);  // +1 for null terminator
+
+    if (filePath == NULL) {
+      perror("malloc");
+      exit(EXIT_FAILURE);
+    }
+
+    // Use snprintf to safely format the string
+    snprintf(filePath, size + 1, "%s/%s", dirPath, entry->d_name);
 
     if (stat(filePath, &fileStat) < 0) {
       perror("stat");
+      free(filePath);  // Don't forget to free the memory
       continue;
     }
 
@@ -58,6 +70,7 @@ void for_dir_in_proc(const char *dirPath) {
       // Process file
       printf("File: %s\n", filePath);
     }
+    free(filePath);  // Don't forget to free the memory
   }
 
   closedir(dir);
