@@ -70,9 +70,10 @@ void for_dir_in_proc(const char *dirPath) {
       printf("Dir: %s\n", entry->d_name);
 
       // If dir's name is a pid
-      char *endptr;  // it shouble be empty after call
+      char *endptr = NULL;  // it shouble be empty after call
       int val = strtol(entry->d_name, &endptr, 10);
       if (endptr != NULL) {
+        printf("enptr:%s\n", endptr);
         continue;  // it's not what we are looking for
       }
 
