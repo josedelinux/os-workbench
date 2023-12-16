@@ -76,6 +76,8 @@ void for_dir_in_proc(const char *dirPath) {
 
       printf("%s: parsed:%d\n", entry->d_name, val);
 
+      extract_ppid();
+
       // if (is_)
     } else {
       // Process file
