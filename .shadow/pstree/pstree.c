@@ -19,12 +19,14 @@
 bool show_pids = false;
 bool numeric_sort = false;
 
-const char *proc_fs_dirpath = "/proc/";
+const char *proc_fs_dirpath = "/proc";
 
 struct option long_options[] = {{"show-pids", no_argument, 0, 'p'},
                                 {"numeric-sort", no_argument, 0, 'n'},
                                 {"version", no_argument, 0, 'V'},
                                 {0, 0, 0, 0}};
+
+int extract_ppid() {}
 
 // walk every /proc/{pid} directory to discover all process
 void for_dir_in_proc(const char *dirPath) {
@@ -61,11 +63,20 @@ void for_dir_in_proc(const char *dirPath) {
 
     if (S_ISDIR(fileStat.st_mode)) {
       // Ignore "." and ".." directories
-      if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
+      if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0) {
         continue;
+      }
 
-      // Recursively traverse subdirectory
-      for_dir_in_proc(filePath);
+      // If dir's name is a pid
+      char *endptr;  // it shouble be empty after call
+      int val = strtol(entry->d_name, &endptr, 10);
+      if (endptr != NULL) {
+        continue;  // it's not what we are looking for
+      }
+
+      printf("%s: parsed:%d\n", entry->d_name, val);
+
+      // if (is_)
     } else {
       // Process file
       printf("File: %s\n", filePath);
