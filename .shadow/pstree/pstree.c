@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <sys/types.h>
 #include <unistd.h>
 
 bool show_pids = false;
@@ -26,7 +27,31 @@ struct option long_options[] = {{"show-pids", no_argument, 0, 'p'},
                                 {"version", no_argument, 0, 'V'},
                                 {0, 0, 0, 0}};
 
-int extract_ppid() { return 1; }
+int get_parent_pid(pid_t pid) {
+  // Construct the path to the /proc/[pid]/stat file
+  char stat_path[256];
+  snprintf(stat_path, sizeof(stat_path), "/proc/%d/stat", pid);
+
+  // Open the /proc/[pid]/stat file for reading
+  FILE *file = fopen(stat_path, "r");
+  if (file == NULL) {
+    perror("fopen");
+    return -1;  // Error opening the file
+  }
+
+  // Read the contents of the /proc/[pid]/stat file
+  long ppid = -1;  // Default value if not found
+  if (fscanf(file, "%*d %*s %*c %ld", &ppid) != 1) {
+    perror("fscanf");
+    fclose(file);
+    return -1;  // Error reading the file
+  }
+
+  // Close the file
+  fclose(file);
+
+  return ppid;
+}
 
 // walk every /proc/[pid] directory to discover all process
 void for_dir_in_proc(const char *dirPath) {
@@ -77,9 +102,11 @@ void for_dir_in_proc(const char *dirPath) {
         continue;  // it's not what we are looking for
       }
 
-      printf("raw:%s\t parsed:%d\n", entry->d_name, val);
+      printf("raw: %s\t parsed: %d\n", entry->d_name, val);
 
-      extract_ppid();
+      int ppid = get_parent_pid(val);
+
+      printf("ppid: %d\n", ppid);
 
       // if (is_)
     } else {
