@@ -28,7 +28,7 @@ struct option long_options[] = {{"show-pids", no_argument, 0, 'p'},
 
 int extract_ppid() { return 1; }
 
-// walk every /proc/{pid} directory to discover all process
+// walk every /proc/[pid] directory to discover all process
 void for_dir_in_proc(const char *dirPath) {
   DIR *dir;
   struct dirent *entry;
@@ -73,7 +73,7 @@ void for_dir_in_proc(const char *dirPath) {
       char *endptr = NULL;  // it shouble be empty after call
       int val = strtol(entry->d_name, &endptr, 10);
       if (strcmp(endptr, "")) {
-        printf("skipping:\tenptr: %s\n", endptr);
+        printf("skip non [pid] directory:\tenptr: %s\n", endptr);
         continue;  // it's not what we are looking for
       }
 
