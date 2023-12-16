@@ -67,6 +67,8 @@ void for_dir_in_proc(const char *dirPath) {
         continue;
       }
 
+      printf("Dir: %s\n", entry->d_name);
+
       // If dir's name is a pid
       char *endptr;  // it shouble be empty after call
       int val = strtol(entry->d_name, &endptr, 10);
@@ -83,11 +85,13 @@ void for_dir_in_proc(const char *dirPath) {
       // Process file
       // printf("File: %s\n", filePath);
     }
+
     free(filePath);  // Don't forget to free the memory
   }
 
   closedir(dir);
 }
+
 // read parent id(4th parameter of /proc/pid/stat)
 void read_ppid() {}
 

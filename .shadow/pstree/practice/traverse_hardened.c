@@ -1,4 +1,5 @@
 #include <dirent.h>
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -41,8 +42,10 @@ void traverseDirectory(const char *dirPath) {
       if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
         continue;
 
+      printf("Dir: %s\n", entry->d_name);
+
       // Recursively traverse subdirectory
-      traverseDirectory(filePath);
+      // traverseDirectory(filePath);
     } else {
       // Process file
       printf("File: %s\n", filePath);
@@ -53,8 +56,8 @@ void traverseDirectory(const char *dirPath) {
   closedir(dir);
 }
 
-int main() {
-  const char *dirPath = ".";
+int main(int argc, char **argv) {
+  const char *dirPath = "..";
   traverseDirectory(dirPath);
 
   return 0;
