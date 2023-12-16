@@ -77,7 +77,7 @@ void for_dir_in_proc(const char *dirPath) {
         continue;  // it's not what we are looking for
       }
 
-      printf("%s: parsed:%d\n", entry->d_name, val);
+      printf("raw:%s\t parsed:%d\n", entry->d_name, val);
 
       extract_ppid();
 
