@@ -26,7 +26,7 @@ struct option long_options[] = {{"show-pids", no_argument, 0, 'p'},
                                 {"version", no_argument, 0, 'V'},
                                 {0, 0, 0, 0}};
 
-int extract_ppid() {}
+int extract_ppid() { return 1; }
 
 // walk every /proc/{pid} directory to discover all process
 void for_dir_in_proc(const char *dirPath) {
