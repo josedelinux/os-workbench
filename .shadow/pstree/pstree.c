@@ -73,7 +73,7 @@ void for_dir_in_proc(const char *dirPath) {
       char *endptr = NULL;  // it shouble be empty after call
       int val = strtol(entry->d_name, &endptr, 10);
       if (strcmp(endptr, "")) {
-        printf("enptr: %s\n", endptr);
+        printf("skipping:\tenptr: %s\n", endptr);
         continue;  // it's not what we are looking for
       }
 
