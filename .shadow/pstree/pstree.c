@@ -12,6 +12,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/stat.h>
 #include <unistd.h>
 
@@ -52,7 +53,7 @@ void for_dir_in_proc(const char *dirPath) {
         continue;
 
       // Recursively traverse subdirectory
-      traverseDirectory(filePath);
+      for_dir_in_proc(filePath);
     } else {
       // Process file
       printf("File: %s\n", filePath);
