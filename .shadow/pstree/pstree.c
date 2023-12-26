@@ -35,13 +35,16 @@ int get_parent_pid(pid_t pid) {
   // Open the /proc/[pid]/stat file for reading
   FILE *file = fopen(stat_path, "r");
   if (file == NULL) {
-    perror("fopen");
+    perror("fopen /proc/[pid]/stat");
     return -1;  // Error opening the file
   }
 
   // Read the contents of the /proc/[pid]/stat file
   long ppid = -1;  // Default value if not found
-  if (fscanf(file, "%*d %*s %*c %ld", &ppid) != 1) {
+  // the asterisk * is used for suppression
+  int ret;
+  if ((ret = fscanf(file, "%*d %*s %*c %ld", &ppid)) != 1) {
+    printf("ret:%d", ret);
     perror("fscanf");
     fclose(file);
     return -1;  // Error reading the file
