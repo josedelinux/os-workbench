@@ -57,6 +57,7 @@ int get_process_info(pid_t pid) {
     fclose(file);
     return -1;  // Error reading the file
   }
+  printf("name:%s", name);
 
   // Close the file
   fclose(file);
