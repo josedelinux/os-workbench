@@ -27,6 +27,7 @@ struct option long_options[] = {{"show-pids", no_argument, 0, 'p'},
                                 {"version", no_argument, 0, 'V'},
                                 {0, 0, 0, 0}};
 
+// get ppid by parsing the file
 int get_parent_pid(pid_t pid) {
   // Construct the path to the /proc/[pid]/stat file
   char stat_path[256];
