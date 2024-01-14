@@ -51,7 +51,7 @@ int get_process_info(pid_t pid) {
   // the asterisk * is used for suppression
   int ret;
   char name[56];
-  if ((ret = fscanf(file, "%*d (%s) %*c %ld", name, &ppid)) != 2) {
+  if ((ret = fscanf(file, "%*d %s %*c %ld", name, &ppid)) != 2) {
     printf("ret:%d", ret);
     perror("fscanf");
     fclose(file);
