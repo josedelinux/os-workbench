@@ -17,6 +17,12 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+typedef struct {
+  pid_t process_id;
+  pid_t parent_pid;
+  char name[256];
+} Process;
+
 bool show_pids = false;
 bool numeric_sort = false;
 
@@ -27,8 +33,8 @@ struct option long_options[] = {{"show-pids", no_argument, 0, 'p'},
                                 {"version", no_argument, 0, 'V'},
                                 {0, 0, 0, 0}};
 
-// get ppid by parsing the file
-int get_parent_pid(pid_t pid) {
+// get ppid and name by parsing the file
+int getProcessInfo(pid_t pid) {
   // Construct the path to the /proc/[pid]/stat file
   char stat_path[256];
   snprintf(stat_path, sizeof(stat_path), "/proc/%d/stat", pid);
@@ -44,7 +50,8 @@ int get_parent_pid(pid_t pid) {
   long ppid = -1;  // Default value if not found
   // the asterisk * is used for suppression
   int ret;
-  if ((ret = fscanf(file, "%*d %*s %*c %ld", &ppid)) != 1) {
+  char name[56];
+  if ((ret = fscanf(file, "%*d %s %*c %ld", name, &ppid)) != 2) {
     printf("ret:%d", ret);
     perror("fscanf");
     fclose(file);
@@ -58,7 +65,7 @@ int get_parent_pid(pid_t pid) {
 }
 
 // walk every /proc/[pid] directory to discover all process
-void for_dir_in_proc(const char *dirPath) {
+void ForDirInProc(const char *dirPath) {
   DIR *dir;
   struct dirent *entry;
   struct stat fileStat;
@@ -108,7 +115,7 @@ void for_dir_in_proc(const char *dirPath) {
 
       printf("raw: %s\t parsed: %d\n", entry->d_name, val);
 
-      int ppid = get_parent_pid(val);
+      int ppid = getProcessInfo(val);
 
       printf("ppid: %d\n", ppid);
 
@@ -125,12 +132,12 @@ void for_dir_in_proc(const char *dirPath) {
 }
 
 // read parent id(4th parameter of /proc/pid/stat)
-void read_ppid() {}
+void ReadParentPid() {}
 
 // build ps tree
-void build_tree() {}
+void BuildTree() {}
 
-void print_tree() {}
+void PrintTree() {}
 
 int main(int argc, char *argv[]) {
   int option_index = 0;
@@ -158,7 +165,7 @@ int main(int argc, char *argv[]) {
   printf("show_pids: %d\n", show_pids);
   printf("numeric_sort: %d\n", numeric_sort);
 
-  for_dir_in_proc(proc_fs_dirpath);
+  ForDirInProc(proc_fs_dirpath);
 
   return 0;
 }
