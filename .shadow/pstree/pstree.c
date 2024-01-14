@@ -17,6 +17,12 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+typedef struct {
+  pid_t process_id;
+  pid_t parent_pid;
+  char name[256];
+} Process;
+
 bool show_pids = false;
 bool numeric_sort = false;
 
@@ -27,8 +33,8 @@ struct option long_options[] = {{"show-pids", no_argument, 0, 'p'},
                                 {"version", no_argument, 0, 'V'},
                                 {0, 0, 0, 0}};
 
-// get ppid by parsing the file
-int get_parent_pid(pid_t pid) {
+// get ppid and name by parsing the file
+int get_process_info(pid_t pid) {
   // Construct the path to the /proc/[pid]/stat file
   char stat_path[256];
   snprintf(stat_path, sizeof(stat_path), "/proc/%d/stat", pid);
@@ -44,7 +50,8 @@ int get_parent_pid(pid_t pid) {
   long ppid = -1;  // Default value if not found
   // the asterisk * is used for suppression
   int ret;
-  if ((ret = fscanf(file, "%*d %*s %*c %ld", &ppid)) != 1) {
+  char name[56];
+  if ((ret = fscanf(file, "%*d %s %*c %ld", &name, &ppid)) != 1) {
     printf("ret:%d", ret);
     perror("fscanf");
     fclose(file);
@@ -108,7 +115,7 @@ void for_dir_in_proc(const char *dirPath) {
 
       printf("raw: %s\t parsed: %d\n", entry->d_name, val);
 
-      int ppid = get_parent_pid(val);
+      int ppid = get_process_info(val);
 
       printf("ppid: %d\n", ppid);
 
